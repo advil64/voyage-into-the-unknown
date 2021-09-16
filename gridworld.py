@@ -10,13 +10,13 @@ class Gridworld:
 
         # start filling in grids by rows and columns
         for x in range(dim):
+            row = []
             for y in range(dim):
-                row = []
                 # first and last squares are guaranteed empty
-                if (x, y) == ((0, 0) or (dim-1, dim-1)):
+                if (x, y) == (0, 0) or (x, y) == (dim-1, dim-1):
                     row.append(0)
                 else:
-                    row.append(choices([0, 1], [1-prob, prob]))
+                    row.append(choices([0, 1], [1-prob, prob])[0])
             # append the row to the gridworld
             self.gridworld.append(row)
     
