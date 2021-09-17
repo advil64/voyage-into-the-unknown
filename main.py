@@ -1,13 +1,17 @@
 # used to read in command line args (dim p heuristic algo)
 import argparse
 from gridworld import Gridworld
+from heuristics import euclidian, manhattan, chebyshev
+from a_star import pathfinder
 
 def solver(dim, prob, heuristic, algo):
 
-    
-    
     # create a gridworld
     g = Gridworld(dim, prob)
+
+    if heuristic == "euclidian":
+        path = pathfinder(g, dim, euclidian)
+        
     
 
     print(g.gridworld)
