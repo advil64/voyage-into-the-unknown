@@ -17,11 +17,40 @@ def solver(dim, prob, heuristic, algo):
     path = []
 
     if heuristic == "euclidian":
-        path = path_planner(complete_grid, dim, euclidian)
+        path = path_planner(discovered_grid, dim, euclidian)
     
-    complete_grid.update_grid(path)
+    complete_grid.update_grid_with_path(path)
     complete_grid.print()
+   
         
+def execute_path(path, complete_grid, discovered_grid, dim):
+    for node in path:
+        curr = node.curr_block
+        # check if path is blocked
+        if complete_grid.gridworld[curr[0]][curr[1]] == 1:
+            discovered_grid.update_grid_obstacle(curr)
+            return False
+        update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
+
+
+def update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim):
+    # check the neighbor above the block
+    if curr[0] - 1 >= 0:
+        if complete_grid.gridworld[curr[0] - 1][curr[1]] == 1:
+            discovered_grid.update_grid_obstacle((curr[0] - 1, curr[1]))
+    # check the neighbor below the block
+    if curr[0] + 1 < dim:
+        if complete_grid.gridworld[curr[0] + 1][curr[1]] == 1:
+            discovered_grid.update_grid_obstacle((curr[0] + 1, curr[1]))
+    # check the neighbor left of the block
+    if curr[1] - 1 >= 0:
+        if complete_grid.gridworld[curr[0]][curr[1] - 1] == 1:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] - 1))
+    # check the neighbor right of the block
+    if curr[1] + 1 < dim:
+        if complete_grid.gridworld[curr[0]][curr[1] + 1] == 1:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1))
+
 
 def main():
     p = argparse.ArgumentParser()

@@ -28,11 +28,12 @@ class Gridworld:
         for row in self.gridworld:
             print(row)
 
-    def update_grid(self, path):
+    def update_grid_with_path(self, path):
         for node in path:
             self.gridworld[node.curr_block[0]][node.curr_block[1]] = 2
     
 
-    
+    def update_grid_obstacle(self, coord):
+        self.gridworld[coord[0]][coord[1]] = 1
 
 
