@@ -3,7 +3,7 @@ from priority_queue import Priority_Queue
 from fringe_node import Fringe_Node
 
 # returns the path found as a list of tuples
-def path_planner(grid, dim, heuristic):
+def path_planner(start, grid, dim, heuristic):
     # contains nodes to be discovered
     fringe = Priority_Queue()
 
@@ -11,8 +11,8 @@ def path_planner(grid, dim, heuristic):
     closed = {}
 
     # create the first fringe node
-    start = Fringe_Node((0, 0), None, heuristic((0, 0), (dim-1, dim-1)), 0)
-    fringe.enqueue(start)
+    start_node = Fringe_Node((start[0], start[1]), None, heuristic((0, 0), (dim-1, dim-1)), 0)
+    fringe.enqueue(start_node)
 
     # loop through the unvisited nodes
     while len(fringe.queue) > 0:
@@ -25,7 +25,7 @@ def path_planner(grid, dim, heuristic):
             path = []
             # we reached the end trace the path back to start
             x = curr
-            while x.curr_block != (0,0):
+            while x.curr_block != start:
                 path.append(x)
                 x = closed[x.parent_block]
             path.append(x)
