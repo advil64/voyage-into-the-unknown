@@ -79,7 +79,7 @@ def update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("-d", "--dimension", type=int, default=10, help="dimension of gridworld")
-    p.add_argument("-p", "--probability", type=float, default=0.33, help="probability of a black square")
+    p.add_argument("-p", "--probability", type=float, default=0.2, help="probability of a black square")
     p.add_argument("-m", "--heuristic", type=str, default="euclidian", help="heuristic of your desired algorithm (if possible)")
     p.add_argument("-a", "--algorithm", type=str, default="a_star", help="algorithm used to traverse gridworld")
 
