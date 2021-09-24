@@ -3,7 +3,7 @@ from priority_queue import Priority_Queue
 from fringe_node import Fringe_Node
 
 # returns the path found as a list of tuples
-def path_planner(start, grid, dim, heuristic):
+def path_planner(start, latest_block, grid, dim, heuristic):
     # contains nodes to be discovered
     fringe = Priority_Queue()
 
@@ -11,7 +11,7 @@ def path_planner(start, grid, dim, heuristic):
     closed = {}
 
     # create the first fringe node
-    start_node = Fringe_Node((start[0], start[1]), None, heuristic((0, 0), (dim-1, dim-1)), 0)
+    start_node = Fringe_Node((start[0], start[1]), latest_block, heuristic((0, 0), (dim-1, dim-1)), 0)
     fringe.enqueue(start_node)
 
     # loop through the unvisited nodes
@@ -27,7 +27,7 @@ def path_planner(start, grid, dim, heuristic):
             x = curr
             while x.curr_block != start:
                 path.append(x)
-                x = closed[x.parent_block]
+                x = x.parent_block
             path.append(x)
             path.reverse()
             return path
@@ -43,20 +43,20 @@ def check_neighbors(grid, dim, heuristic, curr_node, fringe, closed):
     # check the neighbor above the block
     if curr_coord[0] - 1 >= 0:
         if grid.gridworld[curr_coord[0] - 1][curr_coord[1]] == 0 and not (curr_coord[0] - 1, curr_coord[1]) in closed:
-            new_node = Fringe_Node((curr_coord[0] - 1, curr_coord[1]), curr_coord, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] - 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            new_node = Fringe_Node((curr_coord[0] - 1, curr_coord[1]), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] - 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
     # check the neighbor below the block
     if curr_coord[0] + 1 < dim:
         if grid.gridworld[curr_coord[0] + 1][curr_coord[1]] == 0 and not (curr_coord[0] + 1, curr_coord[1]) in closed:
-            new_node = Fringe_Node((curr_coord[0] + 1, curr_coord[1]), curr_coord, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] + 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            new_node = Fringe_Node((curr_coord[0] + 1, curr_coord[1]), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] + 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
     # check the neighbor left of the block
     if curr_coord[1] - 1 >= 0:
         if grid.gridworld[curr_coord[0]][curr_coord[1] - 1] == 0 and not (curr_coord[0], curr_coord[1] - 1) in closed:
-            new_node = Fringe_Node((curr_coord[0], curr_coord[1] - 1), curr_coord, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] - 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            new_node = Fringe_Node((curr_coord[0], curr_coord[1] - 1), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] - 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
     # check the neighbor right of the block
     if curr_coord[1] + 1 < dim:
         if grid.gridworld[curr_coord[0]][curr_coord[1] + 1] == 0 and not (curr_coord[0], curr_coord[1] + 1) in closed:
-            new_node = Fringe_Node((curr_coord[0], curr_coord[1] + 1), curr_coord, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] + 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            new_node = Fringe_Node((curr_coord[0], curr_coord[1] + 1), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] + 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
