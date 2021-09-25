@@ -14,6 +14,9 @@ def repeated_solver(dim, prob, heuristic):
     # create gridworld that agent uses to take note of blocks
     discovered_grid = Gridworld(dim)
 
+    # total number of cells processed
+    total_cells_processed = 0
+
     final_path = None
 
     if heuristic == "chebyshev":
@@ -25,7 +28,8 @@ def repeated_solver(dim, prob, heuristic):
 
     starting_time = time()
     # start planning a path from the starting block
-    new_path = path_planner((0,0), final_path, discovered_grid, dim, heuristic_pointer)
+    new_path, cells_processed = path_planner((0,0), final_path, discovered_grid, dim, heuristic_pointer)
+    total_cells_processed += cells_processed
     # while A* finds a new path
     while len(new_path) > 0:
         # execute the path
@@ -41,9 +45,11 @@ def repeated_solver(dim, prob, heuristic):
         if last_block == (dim-1, dim-1):
             break
         # create a new path from the last unblocked node
-        new_path = path_planner(last_block, last_unblock_node, discovered_grid, dim, heuristic_pointer)
+        new_path, cells_processed = path_planner(last_block, last_unblock_node, discovered_grid, dim, heuristic_pointer)
+        total_cells_processed += cells_processed
 
     print("Completed in %s seconds" % (time() - starting_time))
+    print("Processed %s cells" % total_cells_processed)
     
     complete_grid.update_grid_with_path(final_path)
     complete_grid.print()
@@ -78,7 +84,7 @@ def known_grid_solver(dim, prob, heuristic):
 
     starting_time = time()
     # start planning a path from the starting block
-    new_path = path_planner((0,0), final_path, complete_grid, dim, heuristic_pointer)
+    new_path, cells_processed = path_planner((0,0), final_path, complete_grid, dim, heuristic_pointer)
     
     if new_path:
         final_path = new_path[-1]

@@ -10,6 +10,9 @@ def path_planner(start, latest_block, grid, dim, heuristic):
     # contains nodes that were visited
     closed = {}
 
+    # total number of nodes popped from fringe for processing
+    cells_processed = 0
+
     # create the first fringe node
     start_node = Fringe_Node((start[0], start[1]), latest_block, heuristic((0, 0), (dim-1, dim-1)), 0)
     fringe.enqueue(start_node)
@@ -18,10 +21,11 @@ def path_planner(start, latest_block, grid, dim, heuristic):
     while len(fringe.queue) > 0:
         curr = fringe.de_queue()
         closed[curr.curr_block] = curr
+        cells_processed += 1
 
         # Check if the goal node was popped
         if curr.curr_block == (dim-1, dim-1):
-            # print("Path Found")
+            print("Path Found, Processed %s cells" % cells_processed)
             path = []
             # we reached the end trace the path back to start
             x = curr
@@ -30,12 +34,12 @@ def path_planner(start, latest_block, grid, dim, heuristic):
                 x = x.parent_block
             path.append(x)
             path.reverse()
-            return path
+            return (path, cells_processed)
         else:
             check_neighbors(grid, dim, heuristic, curr, fringe, closed)
 
     # print("No Path Found")
-    return []
+    return ([], cells_processed)
         
             
 def check_neighbors(grid, dim, heuristic, curr_node, fringe, closed):
