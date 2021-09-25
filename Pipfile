@@ -7,6 +7,13 @@ verify_ssl = true
 
 [packages]
 argparse = "*"
+plotly = "*"
+pandas = "*"
+importlib-metadata = "==1.7.0"
+nbformat = "*"
+jupyter = "*"
+ipykernel = "*"
+kaleido = "*"
 
 [requires]
 python_version = "3.7"
