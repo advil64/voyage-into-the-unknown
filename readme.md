@@ -106,6 +106,36 @@ As you can see the priority queue is ordered by the nodes which are closer to th
 
 ![Plot](graphs/question_4.png)
 
-As we can see, there's a clear and steep decline of the solvability of the gridworld once we increase $p_0$ to 0.4. Therefore our hypothesis has been tested and true; solvability does indeed fall steeply once you reach a threshold probability of $0.4$ when solvability decreases to $0.05$ according to our testing.
+As we can see, there's a clear and steep decline of the solvability of the gridworld once we increase $p_0$ to $0.4$. Therefore our hypothesis has been tested and true; solvability does indeed fall steeply once you reach a threshold probability of $0.4$ when solvability decreases to $0.05$ according to our testing.
 
 We do believe that A* is the best search algorithm as it is guaranteed to find a path in any solvable gridworld due to it's backtracking, path planning, and heuristics methodologies. Therefore if A* did not succeed it means that the gridworld was not a solvable one which is what we are trying to measure.
+
+**Question 5**: Among environments that are solvable, is one heuristic uniformly better than the other for running A*? How can they be compared? Plot the relevant data and justify your conclusions. Again, you may take each gridworld as known, and thus only search once.
+
+**Answer**: Acording to our findings the manhattan distance is uniformly better than the others for running A*. To find the best heuristic we first fixed $p=0.1$ and $dimension=500$ and we ran the following loop 100 times recording the time each loop and each heuristic. To be fair to all three heuristics we made sure to use the same grid for each one every time we ran the loop.
+
+```python
+# create the gridworld
+    complete_grid = Gridworld(dim, prob, False)
+    final_path = None
+
+    # times: chebyshev, manhattan, euclidian
+    times = []
+
+    for i,h in enumerate([chebyshev, manhattan, euclidian]):
+        starting_time = time()
+        path_planner((0,0), final_path, complete_grid, dim, h)
+        times.append(time() - starting_time)
+    
+    print(times)
+```
+
+Then we saved all of the times and graphed the data using a bar plot.
+
+![Plot](graphs/question_5_1.png)
+
+As you can see the Manhattan distance had the lowest run time out of all the other heuristics. To make sure that this data is supported we re-ran our loop with $p=0.4$ this time which was the threshold for solvability as we saw before. The bar plot is shown below.
+
+![Plot](graphs/question_5_4.png)
+
+From this plot we see that our initial observation holds true even when we increase our blocking probability to $0.4$. Though there are significantly more unsolvable grids.

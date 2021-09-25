@@ -105,6 +105,24 @@ def update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim):
     if curr[1] + 1 < dim:
         if complete_grid.gridworld[curr[0]][curr[1] + 1] == 1:
             discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1))
+    
+def question_five(dim, prob, algo):
+
+    # create the gridworld
+    complete_grid = Gridworld(dim, prob, False)
+    final_path = None
+
+    # times: chebyshev, manhattan, euclidian
+    times = []
+
+    for i,h in enumerate([chebyshev, manhattan, euclidian]):
+        starting_time = time()
+        path_planner((0,0), final_path, complete_grid, dim, h)
+        times.append(time() - starting_time)
+    
+    print(times)
+
+
 
 
 def main():
@@ -117,10 +135,12 @@ def main():
     # parse arguments and create the gridworld
     args = p.parse_args()
     
-    if args.algorithm == "a_star":
+    if args.algorithm == "a_star" and args.heuristic != "all":
         known_grid_solver(args.dimension, args.probability, args.heuristic)
     elif args.algorithm == "repeated_a_star":
         repeated_solver(args.dimension, args.probability, args.heuristic)
+    elif args.heuristic == "all":
+        question_five(args.dimension, args.probability, args.algorithm)
         
 
 if __name__ == "__main__":
