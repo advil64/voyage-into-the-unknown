@@ -100,4 +100,12 @@ if curr_coord[0] - 1 >= 0:
 
 As you can see the priority queue is ordered by the nodes which are closer to the finish point w.r.t. the heuristic. Therefore even if one of the neighbors is blocked, the agent will move in the direction closest to the finish point when chosing a different node to move to.
 
-**Question 4**: A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on $$p$$? Given $$dim = 101$$, how does solvability depend on $$p$$? For a range of $$p$$ values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold $$p_0$$ where for $$p < p_0$$, most mazes are solvable, but $$p > p_0$$, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
+**Question 4**: A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on $p$? Given $dim = 101$, how does solvability depend on $p$? For a range of $p$ values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold $p_0$ where for $p < p_0$, most mazes are solvable, but $p > p_0$, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
+
+**Answer**: We can assume that once density of blocks increases, there will be a steep decline in solvability and the number of paths to the finish node will be severely reduced. To test our hypothesis we calculated solvability after running 20 trials of the algorithm at p being each tenth of a decimal between 0.1 to 0.9. After running our test, we got this resulting plot.
+
+![Plot](graphs/question_4.png)
+
+As we can see, there's a clear and steep decline of the solvability of the gridworld once we increase $p_0$ to 0.4. Therefore our hypothesis has been tested and true; solvability does indeed fall steeply once you reach a threshold probability of $0.4$ when solvability decreases to $0.05$ according to our testing.
+
+We do believe that A* is the best search algorithm as it is guaranteed to find a path in any solvable gridworld due to it's backtracking, path planning, and heuristics methodologies. Therefore if A* did not succeed it means that the gridworld was not a solvable one which is what we are trying to measure.
