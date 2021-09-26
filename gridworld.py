@@ -25,15 +25,19 @@ class Gridworld:
                 self.gridworld.append(row)
             #self.gridworld = [[0,0,0,0,0], [0,1,1,1,0], [0,1,0,1,0], [0,1,0,1,0], [0,0,0,1,0]]
             #self.gridworld = [[0,0,0,0,0,0], [0,1,1,1,1,0], [0,1,1,0,0,0], [0,1,0,0,1,0], [0,1,0,1,1,0], [0,0,0,1,1,0]]
+            # self.gridworld = [[0,0,0,0,1],[0,0,0,1,1],[0,1,0,1,0],[0,1,0,0,0], [1,1,1,1,0]]
     
     def print(self):
         for row in self.gridworld:
             print(row)
 
     def update_grid_with_path(self, path):
+        trajectory_length = 0
         while path:
             self.gridworld[path.curr_block[0]][path.curr_block[1]] = 2
             path = path.parent_block
+            trajectory_length += 1
+        return trajectory_length
     
 
     def update_grid_obstacle(self, coord):

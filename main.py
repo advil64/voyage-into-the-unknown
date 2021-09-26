@@ -51,7 +51,8 @@ def repeated_solver(dim, prob, heuristic):
     print("Completed in %s seconds" % (time() - starting_time))
     print("Processed %s cells" % total_cells_processed)
     
-    complete_grid.update_grid_with_path(final_path)
+    trajectory_length = complete_grid.update_grid_with_path(final_path)
+    print("Trajectory Length: " + str(trajectory_length))
     complete_grid.print()
    
         
