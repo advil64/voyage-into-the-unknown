@@ -69,7 +69,7 @@ def execute_path(path, complete_grid, discovered_grid, dim):
             return node.parent_block
         discovered_grid.update_grid_obstacle(curr, 0)
         # update knowledge of neighbor blocks
-        update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
+        # update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
     return path[-1]
 
 def known_grid_solver(dim, prob, heuristic, complete_grid):
