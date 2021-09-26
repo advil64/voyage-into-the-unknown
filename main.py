@@ -52,8 +52,11 @@ def repeated_solver(dim, prob, heuristic):
     print("Processed %s cells" % total_cells_processed)
     
     trajectory_length = complete_grid.update_grid_with_path(final_path)
-    print("Trajectory Length: " + str(trajectory_length))
-    complete_grid.print()
+    # print("Trajectory Length: " + str(trajectory_length))
+    #complete_grid.print()
+    discovered_grid.print()
+
+    return trajectory_length, discovered_grid
    
         
 def execute_path(path, complete_grid, discovered_grid, dim):
@@ -62,16 +65,17 @@ def execute_path(path, complete_grid, discovered_grid, dim):
         # check if path is blocked
         if complete_grid.gridworld[curr[0]][curr[1]] == 1:
             # update our knowledge of blocked nodes
-            discovered_grid.update_grid_obstacle(curr)
+            discovered_grid.update_grid_obstacle(curr, 1)
             return node.parent_block
+        discovered_grid.update_grid_obstacle(curr, 0)
         # update knowledge of neighbor blocks
         update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
     return path[-1]
 
-def known_grid_solver(dim, prob, heuristic):
+def known_grid_solver(dim, prob, heuristic, complete_grid):
 
     # create a gridworld
-    complete_grid = Gridworld(dim, prob, False)
+    # complete_grid = Gridworld(dim, prob, False)
     # complete_grid.print()
 
     final_path = None
@@ -87,31 +91,42 @@ def known_grid_solver(dim, prob, heuristic):
     # start planning a path from the starting block
     new_path, cells_processed = path_planner((0,0), final_path, complete_grid, dim, heuristic_pointer)
     
+    trajectory = 0
+
     if new_path:
         final_path = new_path[-1]
         print("Completed in %s seconds" % (time() - starting_time))
         
-        complete_grid.update_grid_with_path(final_path)
+        trajectory = complete_grid.update_grid_with_path(final_path)
     
     # complete_grid.print()
+    return trajectory
 
 def update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim):
     # check the neighbor above the block
     if curr[0] - 1 >= 0:
         if complete_grid.gridworld[curr[0] - 1][curr[1]] == 1:
-            discovered_grid.update_grid_obstacle((curr[0] - 1, curr[1]))
+            discovered_grid.update_grid_obstacle((curr[0] - 1, curr[1]), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0] - 1, curr[1]), 0)
     # check the neighbor below the block
     if curr[0] + 1 < dim:
         if complete_grid.gridworld[curr[0] + 1][curr[1]] == 1:
-            discovered_grid.update_grid_obstacle((curr[0] + 1, curr[1]))
+            discovered_grid.update_grid_obstacle((curr[0] + 1, curr[1]), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0] + 1, curr[1]), 0)
     # check the neighbor left of the block
     if curr[1] - 1 >= 0:
         if complete_grid.gridworld[curr[0]][curr[1] - 1] == 1:
-            discovered_grid.update_grid_obstacle((curr[0], curr[1] - 1))
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] - 1), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] - 1), 0)
     # check the neighbor right of the block
     if curr[1] + 1 < dim:
         if complete_grid.gridworld[curr[0]][curr[1] + 1] == 1:
-            discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1))
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1), 0)
     
 def question_five(dim, prob, algo):
 
@@ -129,8 +144,21 @@ def question_five(dim, prob, algo):
     
     print(times)
 
+def question_six(dim, prob):
 
+    #first use repeated A* to get the discovered grid
+    traj, discovered_world = repeated_solver(dim, prob, "manhattan")
 
+    for i in range(dim):
+        for j in range(dim):
+            curr = discovered_world.gridworld[i][j]
+            if curr == 9:
+                discovered_world.update_grid_obstacle((i,j), 1)
+    
+    shortest_path_traj = known_grid_solver(dim, prob, "manhattan", discovered_world)
+
+    print("Trajectory Length: " + str(traj))
+    print("Shortest Path: " + str(shortest_path_traj))
 
 def main():
     p = argparse.ArgumentParser()
@@ -141,13 +169,15 @@ def main():
 
     # parse arguments and create the gridworld
     args = p.parse_args()
+
+    question_six(args.dimension, args.probability)
     
-    if args.algorithm == "a_star" and args.heuristic != "all":
-        known_grid_solver(args.dimension, args.probability, args.heuristic)
-    elif args.algorithm == "repeated_a_star":
-        repeated_solver(args.dimension, args.probability, args.heuristic)
-    elif args.heuristic == "all":
-        question_five(args.dimension, args.probability, args.algorithm)
+    # if args.algorithm == "a_star" and args.heuristic != "all":
+    #     known_grid_solver(args.dimension, args.probability, args.heuristic)
+    # elif args.algorithm == "repeated_a_star":
+    #     repeated_solver(args.dimension, args.probability, args.heuristic)
+    # elif args.heuristic == "all":
+    #     question_five(args.dimension, args.probability, args.algorithm)
         
 
 if __name__ == "__main__":

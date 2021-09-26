@@ -11,7 +11,7 @@ class Gridworld:
         # start filling in grids by rows and columns
         if empty:
             for x in range(dim):
-                self.gridworld.append([0 for i in range(dim)])
+                self.gridworld.append([9 for i in range(dim)])
         else:
             for x in range(dim):
                 row = []
@@ -23,7 +23,7 @@ class Gridworld:
                         row.append(choices([0, 1], [1-prob, prob])[0])
                 # append the row to the gridworld
                 self.gridworld.append(row)
-            #self.gridworld = [[0,0,0,0,0], [0,1,1,1,0], [0,1,0,1,0], [0,1,0,1,0], [0,0,0,1,0]]
+            # self.gridworld = [[0,0,0,0,0], [0,1,1,1,0], [0,1,0,1,0], [0,1,0,1,0], [0,0,0,1,0]]
             #self.gridworld = [[0,0,0,0,0,0], [0,1,1,1,1,0], [0,1,1,0,0,0], [0,1,0,0,1,0], [0,1,0,1,1,0], [0,0,0,1,1,0]]
             # self.gridworld = [[0,0,0,0,1],[0,0,0,1,1],[0,1,0,1,0],[0,1,0,0,0], [1,1,1,1,0]]
     
@@ -40,7 +40,7 @@ class Gridworld:
         return trajectory_length
     
 
-    def update_grid_obstacle(self, coord):
-        self.gridworld[coord[0]][coord[1]] = 1
+    def update_grid_obstacle(self, coord, value):
+        self.gridworld[coord[0]][coord[1]] = value
 
 

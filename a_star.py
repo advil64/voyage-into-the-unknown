@@ -46,21 +46,21 @@ def check_neighbors(grid, dim, heuristic, curr_node, fringe, closed):
     curr_coord = curr_node.curr_block
     # check the neighbor above the block
     if curr_coord[0] - 1 >= 0:
-        if grid.gridworld[curr_coord[0] - 1][curr_coord[1]] == 0 and not (curr_coord[0] - 1, curr_coord[1]) in closed:
+        if grid.gridworld[curr_coord[0] - 1][curr_coord[1]] != 1 and not (curr_coord[0] - 1, curr_coord[1]) in closed:
             new_node = Fringe_Node((curr_coord[0] - 1, curr_coord[1]), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] - 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
     # check the neighbor below the block
     if curr_coord[0] + 1 < dim:
-        if grid.gridworld[curr_coord[0] + 1][curr_coord[1]] == 0 and not (curr_coord[0] + 1, curr_coord[1]) in closed:
+        if grid.gridworld[curr_coord[0] + 1][curr_coord[1]] != 1 and not (curr_coord[0] + 1, curr_coord[1]) in closed:
             new_node = Fringe_Node((curr_coord[0] + 1, curr_coord[1]), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] + 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
     # check the neighbor left of the block
     if curr_coord[1] - 1 >= 0:
-        if grid.gridworld[curr_coord[0]][curr_coord[1] - 1] == 0 and not (curr_coord[0], curr_coord[1] - 1) in closed:
+        if grid.gridworld[curr_coord[0]][curr_coord[1] - 1] != 1 and not (curr_coord[0], curr_coord[1] - 1) in closed:
             new_node = Fringe_Node((curr_coord[0], curr_coord[1] - 1), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] - 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
     # check the neighbor right of the block
     if curr_coord[1] + 1 < dim:
-        if grid.gridworld[curr_coord[0]][curr_coord[1] + 1] == 0 and not (curr_coord[0], curr_coord[1] + 1) in closed:
+        if grid.gridworld[curr_coord[0]][curr_coord[1] + 1] != 1 and not (curr_coord[0], curr_coord[1] + 1) in closed:
             new_node = Fringe_Node((curr_coord[0], curr_coord[1] + 1), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] + 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
             fringe.enqueue(new_node)
