@@ -142,9 +142,10 @@ From this plot we see that our initial observation holds true even when we incre
 
 **Question 6**: Taking $dim = 101$, for a range of density $p$ values from 0 to min $(p_0; 0.33)$, and the heuristic chosen as best in Q5, repeatedly generate gridworlds and solve them using Repeated Forward A*. Use as the field of view each immediately adjacent cell in the compass directions. Discuss your results. Are they as you expected? Explain.
 
-**Answer**: To calculate density average trajectory length first split our tests into five trials. In each trial we we ran the repeated A* algorithm 34 times between $p=0$ and $p=0.33$ to see how the trajectory would increase when density is increased. Then we took the average of the five trials for each p-value.
+**Answer**: To calculate density average trajectory length first split our tests into 100 trials. In each trial we we ran the repeated A* algorithm 12 times between $p=0$ and $p=0.33$ at intervals of $0.03$ to see how the trajectory would increase when density is increased. Then we took the average of the hundred trials for each p-value ending up with 12 total data points for trajectory.
 
 ![Plot](graphs/question_6_1.png)
 
 As you can see we achieved the expected result which is the positive correlation between density and average trajectory length. Obviously our algorithm had to take more steps when there are more blockages in its path.
 
+For the next graph we followed the same experiment procedure but in addition to calculating trajectory we also calculated the length of the shortest path in the discovered gridworld by running A* on the discovered grid after running repeated A*.

@@ -56,7 +56,7 @@ def repeated_solver(dim, prob, heuristic):
     #complete_grid.print()
     discovered_grid.print()
 
-    return trajectory_length, discovered_grid
+    return trajectory_length, discovered_grid, complete_grid
    
         
 def execute_path(path, complete_grid, discovered_grid, dim):
@@ -147,7 +147,7 @@ def question_five(dim, prob, algo):
 def question_six(dim, prob):
 
     #first use repeated A* to get the discovered grid
-    traj, discovered_world = repeated_solver(dim, prob, "manhattan")
+    traj, discovered_world, complete_grid = repeated_solver(dim, prob, "manhattan")
 
     for i in range(dim):
         for j in range(dim):
@@ -156,9 +156,11 @@ def question_six(dim, prob):
                 discovered_world.update_grid_obstacle((i,j), 1)
     
     shortest_path_traj = known_grid_solver(dim, prob, "manhattan", discovered_world)
+    full_shortest_path_traj = known_grid_solver(dim, prob, "manhattan", complete_grid)
 
     print("Trajectory Length: " + str(traj))
     print("Shortest Path: " + str(shortest_path_traj))
+    print("Full Gridworld Path: " + str(full_shortest_path_traj))
 
 def main():
     p = argparse.ArgumentParser()
