@@ -141,3 +141,10 @@ As you can see the Manhattan distance had the lowest run time out of all the oth
 From this plot we see that our initial observation holds true even when we increase our blocking probability to $0.4$. Though there are significantly more unsolvable grids.
 
 **Question 6**: Taking $dim = 101$, for a range of density $p$ values from 0 to min $(p_0; 0.33)$, and the heuristic chosen as best in Q5, repeatedly generate gridworlds and solve them using Repeated Forward A*. Use as the field of view each immediately adjacent cell in the compass directions. Discuss your results. Are they as you expected? Explain.
+
+**Answer**: To calculate density average trajectory length first split our tests into five trials. In each trial we we ran the repeated A* algorithm 34 times between $p=0$ and $p=0.33$ to see how the trajectory would increase when density is increased. Then we took the average of the five trials for each p-value.
+
+![Plot](graphs/question_6_1.png)
+
+As you can see we achieved the expected result which is the positive correlation between density and average trajectory length. Obviously our algorithm had to take more steps when there are more blockages in its path.
+
