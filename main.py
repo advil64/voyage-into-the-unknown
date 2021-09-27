@@ -72,10 +72,10 @@ def execute_path(path, complete_grid, discovered_grid, dim):
         # update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
     return path[-1]
 
-def known_grid_solver(dim, prob, heuristic, complete_grid):
+def known_grid_solver(dim, prob, heuristic):
 
     # create a gridworld
-    # complete_grid = Gridworld(dim, prob, False)
+    complete_grid = Gridworld(dim, prob, False)
     # complete_grid.print()
 
     final_path = None
@@ -172,14 +172,14 @@ def main():
     # parse arguments and create the gridworld
     args = p.parse_args()
 
-    question_six(args.dimension, args.probability)
+    # question_six(args.dimension, args.probability)
     
-    # if args.algorithm == "a_star" and args.heuristic != "all":
-    #     known_grid_solver(args.dimension, args.probability, args.heuristic)
-    # elif args.algorithm == "repeated_a_star":
-    #     repeated_solver(args.dimension, args.probability, args.heuristic)
-    # elif args.heuristic == "all":
-    #     question_five(args.dimension, args.probability, args.algorithm)
+    if args.algorithm == "a_star" and args.heuristic != "all":
+        known_grid_solver(args.dimension, args.probability, args.heuristic)
+    elif args.algorithm == "repeated_a_star":
+        repeated_solver(args.dimension, args.probability, args.heuristic)
+    elif args.heuristic == "all":
+        question_five(args.dimension, args.probability, args.algorithm)
         
 
 if __name__ == "__main__":
