@@ -164,4 +164,28 @@ We see that this is true, however unlike the last part, our new graph increases 
 
 And again our hypothesis is proven true as there is a clear exponential increase in the number of cells that are processed(discovered) once density is increased. This is because each time there is a block, our agent looks at every neighbor and assesses other options.
 
+**Question 7**: Generate and analyze the same data as in Q6, except using only the cell in the direction of attempted motion as the  eld of view. In other words, the agent may attempt to move in a given direction, and only discovers obstacles by bumping into them. How does the reduced field of view impact the performance of the algorithm?
+
+**Answer**: Because less of the gridworld is updated on each move of the agent, you would think that trajectory length might be a bit longer in the reduced field of view as you might need to back track more.
+
+![Plot](graphs/question_7_1.png)
+
+While this might be true to an extent at higher densities of blockers, we really did not see that much of an increase in the trajectory length overall in our A* implementation. This might mean that while doing repeated A* it really doesn't make much of a difference in the end overall trajectory to update neighbors while traversing the gridworld. However it might take a longer amount of time to execute the algorithm.
+
+Next we looked at the average length of the trajectory divided by the average length of the shortest path on the discovered grid. Because trajectories did not increase as much you would expect the shortest path to not have been too impacted as well as both rely on the density in a similar way.
+
+![Plot](graphs/question_7_2.png)
+
+We can again see that the ratio really did not change as much again. However at higher densities it is likely that the trajectory increases while the shortest path in the discovered grid stays the same as the ratio decreses by a tenth. This might mean that the shortest path stays about the same wether we look at the full field or not.
+
+Next we looked at the shortest paths of the discovered divided by the full. Again we would expect this to look similar to the previous full field paths.
+
+![Plot](graphs/question_7_3.png)
+
+*I have no idea how to explain this result*
+
+![Plot](graphs/question_7_4.png)
+
+Here we can clearly see that the number of nodes required to be processed is significantly greater if we don't explore neighbors at each step in the path. This is because the agent would now have to move more and bump into more nodes to figure out what the landscape looks like.
+
 **Question 9**: A* can frequently be sped up by the use of inadmissible heuristics - for instance weighted heuristics or combinations of heuristics. These can cut down on runtime potentially at the cost of path length. Can this be applied here? What is the e ect of weighted heuristics on runtime and overall trajectory? Try to reduce the runtime as much as possible without too much cost to trajectory length.
