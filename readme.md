@@ -1,5 +1,5 @@
 # Voyage Into the Unknown
-### Advith Chegu & Naveenan Yogeswaran
+### Advith Chegu (ac1771) & Naveenan Yogeswaran (nry7)
 
 **Question 1**: Why does re-planning only occur when blocks are discovered on the current path? Why not whenever knowledge of the environment is updated?
 
@@ -80,25 +80,26 @@ new_path = path_planner(last_unblock, discovered_grid, dim, euclidian)
 
 By using this smart method of backtracking in the case of a blockage in the path, we can avoid getting stuck in a solvable maze as we can always move back node by node to check if there are any unvisited paths that were missed in the first go around.
 
-**Question 3**: *Unsure* Once the agent reaches the target, consider re-solving the now discovered gridworld for the shortest path (eliminating any backtracking that may have occurred). Will this be an optimal path in the complete gridworld? Argue for, or give a counter example.
+**Question 3**: Once the agent reaches the target, consider re-solving the now discovered gridworld for the shortest path (eliminating any backtracking that may have occurred). Will this be an optimal path in the complete gridworld? Argue for, or give a counter example.
 
-**Counter Questions**: Is the path the agent takes after it has already solved the gridworld the same as the initial path when it does solve it?
+**Answer**: While the A* algorithm will always give us the shortest path; repeated A* might not give us the most optimal path. For example let us take the following maze:
 
-Does repeated A* return the most optimal path?
-
-**Answer**: The A* algorithm will always give us the shortest path depending on our heuristic. This means that if we were to re-solve the discovered gridworld after finding a path, the new path is guaranteed to be the shortest due to the way our heuristic/priority is measured. To back up my argument, let me explain how new nodes are added to the priority queue:
-
-```python
-curr_coord = curr_node.curr_block
-# check the neighbor above the block
-if curr_coord[0] - 1 >= 0:
-    if grid.gridworld[curr_coord[0] - 1][curr_coord[1]] == 0 and not (curr_coord[0] - 1, curr_coord[1]) in closed:
-        new_node = Fringe_Node((curr_coord[0] - 1, curr_coord[1]), curr_coord, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] - 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
-        fringe.enqueue(new_node)
-# Same thing is done to the other neighbors of the node
+```
+[0,0,0,0,0,0]
+[0,1,1,1,1,0]
+[0,1,1,0,0,0]
+[0,1,0,0,1,0]
+[0,1,0,1,1,0]
+[0,0,0,1,1,0]
 ```
 
-As you can see the priority queue is ordered by the nodes which are closer to the finish point w.r.t. the heuristic. Therefore even if one of the neighbors is blocked, the agent will move in the direction closest to the finish point when chosing a different node to move to.
+Depending on how we setup our queue and heuristic functions, our agent has two options:
+ 1. If the agent takes a step to the right first then it is on its way to find the shortest path. In this case our discovered gridworld once the agent moves through it will contain the shortest path and A* will follow this path to the finish node.
+ 2. If the agent takes a step down first then it will have to follow the longer path. In this case our discovered gridworld will not contain the shortest path of the complete gridworld and therefore will not be able to traverse it once we re run A8 on the discovered world.
+
+Therefore as you can see, if we were to re-solve our discovered gridworld once a path was found; though it is certainly possible that the shortest (most optimal) path is found it is by no means a guarantee.
+
+This means that if we were to re-solve the discovered gridworld after finding a path, the new path is guaranteed to be the shortest due to the way our heuristic/priority is measured. To back up my argument, let me explain how new nodes are added to the priority queue:
 
 **Question 4**: A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on $p$? Given $dim = 101$, how does solvability depend on $p$? For a range of $p$ values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold $p_0$ where for $p < p_0$, most mazes are solvable, but $p > p_0$, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
 
