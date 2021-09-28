@@ -13,5 +13,14 @@ def chebyshev(start, end):
     return max(abs(start[0]-end[0]), abs(start[1]-end[1]))
 
 # Euclidean and Manhattan
-def combined(start, end):
-    return euclidian(start, end) * 0.33 + manhattan(start, end) * 0.67
+def manhattan_three(start, end):
+    return manhattan(start, end) * 3
+
+def chebyshev_manhattan(start, end):
+    return manhattan(start, end) + chebyshev(start, end)
+
+def chebyshev_euclidian(start, end):
+    return euclidian(start, end) + chebyshev(start, end)
+
+def manhattan_euclidian(start, end):
+    return euclidian(start, end) + chebyshev(start, end)

@@ -1,15 +1,16 @@
 # used to read in command line args (dim p heuristic algo)
 import argparse
 from gridworld import Gridworld
-from heuristics import euclidian, manhattan, chebyshev, combined
+from heuristics import euclidian, manhattan, chebyshev, manhattan_three, chebyshev_euclidian, chebyshev_manhattan, manhattan_euclidian
 from a_star import path_planner
 from time import sleep, time
 
-def repeated_solver(dim, prob, heuristic):
+def repeated_solver(dim, prob, heuristic_pointer, complete_grid = None):
 
     # create a gridworld
-    complete_grid = Gridworld(dim, prob, False)
-    complete_grid.print()
+    if not complete_grid:
+        complete_grid = Gridworld(dim, prob, False)
+        complete_grid.print()
 
     # create gridworld that agent uses to take note of blocks
     discovered_grid = Gridworld(dim)
@@ -19,14 +20,14 @@ def repeated_solver(dim, prob, heuristic):
 
     final_path = None
 
-    if heuristic == "chebyshev":
-        heuristic_pointer = chebyshev
-    elif heuristic == "manhattan":
-        heuristic_pointer = manhattan
-    elif heuristic == "combined":
-        heuristic_pointer = combined
-    else:
-        heuristic_pointer = euclidian
+    # if heuristic == "chebyshev":
+    #     heuristic_pointer = chebyshev
+    # elif heuristic == "manhattan":
+    #     heuristic_pointer = manhattan
+    # elif heuristic == "combined":
+    #     heuristic_pointer = combined
+    # else:
+    #     heuristic_pointer = euclidian
 
     starting_time = time()
     # start planning a path from the starting block
@@ -51,14 +52,17 @@ def repeated_solver(dim, prob, heuristic):
         total_cells_processed += cells_processed
 
     # print("Completed in %s seconds" % (time() - starting_time))
-    print("Processed %s cells" % total_cells_processed)
+    # print("Processed %s cells" % total_cells_processed)
     
     trajectory_length = get_trajectory(final_path)
-    print("Trajectory Length: " + str(trajectory_length))
+    # print("Trajectory Length: " + str(trajectory_length))
     #complete_grid.print()
+    #discovered_grid.update_grid_with_path(final_path)
     #discovered_grid.print()
 
-    return trajectory_length, discovered_grid, complete_grid
+    #, discovered_grid, complete_grid
+
+    return trajectory_length
    
         
 def execute_path(path, complete_grid, discovered_grid, dim):
@@ -160,7 +164,7 @@ def question_six(dim, prob):
     shortest_path_traj = known_grid_solver(dim, prob, "manhattan", discovered_world)
     full_shortest_path_traj = known_grid_solver(dim, prob, "manhattan", complete_grid)
 
-    print("Trajectory Length: " + str(traj))
+    # print("Trajectory Length: " + str(traj))
     print("Shortest Path: " + str(shortest_path_traj))
     print("Full Gridworld Path: " + str(full_shortest_path_traj))
 
@@ -169,15 +173,13 @@ def question_nine(dim, prob, algo):
     # create the gridworld
     complete_grid = Gridworld(dim, prob, False)
 
-    # times: chebyshev, manhattan, euclidian
-    times = []
+    # times: chebyshev, manhattan, euclidian, manhattan_three, chebyshev_manhattan, chebyshev_euclidian, manhattan_euclidian
 
-    for i,h in enumerate([chebyshev, manhattan, euclidian, combined]):
+    for i,h in enumerate([chebyshev, manhattan, euclidian, manhattan_three, chebyshev_manhattan, chebyshev_euclidian, manhattan_euclidian]):
         starting_time = time()
-        repeated_solver(dim, prob, h)
-        times.append(time() - starting_time)
-    
-    print(times)
+        traj = repeated_solver(dim, prob, h, complete_grid)
+        print(str(time() - starting_time) + " " + str(traj))
+        print(",")
 
 def get_trajectory(path):
     trajectory_length = 0
@@ -196,14 +198,14 @@ def main():
     # parse arguments and create the gridworld
     args = p.parse_args()
 
-    # question_six(args.dimension, args.probability)
+    question_nine(args.dimension, args.probability, args.algorithm)
     
-    if args.algorithm == "a_star" and args.heuristic != "all":
-        known_grid_solver(args.dimension, args.probability, args.heuristic)
-    elif args.algorithm == "repeated_a_star":
-        repeated_solver(args.dimension, args.probability, args.heuristic)
-    elif args.heuristic == "all":
-        question_five(args.dimension, args.probability, args.algorithm)
+    # if args.algorithm == "a_star" and args.heuristic != "all":
+    #     known_grid_solver(args.dimension, args.probability, args.heuristic)
+    # elif args.algorithm == "repeated_a_star":
+    #     repeated_solver(args.dimension, args.probability, args.heuristic)
+    # elif args.heuristic == "all":
+    #     question_five(args.dimension, args.probability, args.algorithm)
         
 
 if __name__ == "__main__":
