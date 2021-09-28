@@ -1,7 +1,7 @@
 # used to read in command line args (dim p heuristic algo)
 import argparse
 from gridworld import Gridworld
-from heuristics import euclidian, manhattan, chebyshev
+from heuristics import euclidian, manhattan, chebyshev, combined
 from a_star import path_planner
 from time import sleep, time
 
@@ -23,6 +23,8 @@ def repeated_solver(dim, prob, heuristic):
         heuristic_pointer = chebyshev
     elif heuristic == "manhattan":
         heuristic_pointer = manhattan
+    elif heuristic == "combined":
+        heuristic_pointer = combined
     else:
         heuristic_pointer = euclidian
 
@@ -48,13 +50,13 @@ def repeated_solver(dim, prob, heuristic):
         new_path, cells_processed = path_planner(last_block, last_unblock_node, discovered_grid, dim, heuristic_pointer)
         total_cells_processed += cells_processed
 
-    print("Completed in %s seconds" % (time() - starting_time))
+    # print("Completed in %s seconds" % (time() - starting_time))
     print("Processed %s cells" % total_cells_processed)
     
-    trajectory_length = complete_grid.update_grid_with_path(final_path)
-    # print("Trajectory Length: " + str(trajectory_length))
+    trajectory_length = get_trajectory(final_path)
+    print("Trajectory Length: " + str(trajectory_length))
     #complete_grid.print()
-    discovered_grid.print()
+    #discovered_grid.print()
 
     return trajectory_length, discovered_grid, complete_grid
    
@@ -69,7 +71,7 @@ def execute_path(path, complete_grid, discovered_grid, dim):
             return node.parent_block
         discovered_grid.update_grid_obstacle(curr, 0)
         # update knowledge of neighbor blocks
-        # update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
+        update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
     return path[-1]
 
 def known_grid_solver(dim, prob, heuristic):
@@ -137,7 +139,7 @@ def question_five(dim, prob, algo):
     # times: chebyshev, manhattan, euclidian
     times = []
 
-    for i,h in enumerate([chebyshev, manhattan, euclidian]):
+    for i,h in enumerate([chebyshev, manhattan, euclidian, combined]):
         starting_time = time()
         path_planner((0,0), final_path, complete_grid, dim, h)
         times.append(time() - starting_time)
@@ -161,6 +163,28 @@ def question_six(dim, prob):
     print("Trajectory Length: " + str(traj))
     print("Shortest Path: " + str(shortest_path_traj))
     print("Full Gridworld Path: " + str(full_shortest_path_traj))
+
+def question_nine(dim, prob, algo):
+
+    # create the gridworld
+    complete_grid = Gridworld(dim, prob, False)
+
+    # times: chebyshev, manhattan, euclidian
+    times = []
+
+    for i,h in enumerate([chebyshev, manhattan, euclidian, combined]):
+        starting_time = time()
+        repeated_solver(dim, prob, h)
+        times.append(time() - starting_time)
+    
+    print(times)
+
+def get_trajectory(path):
+    trajectory_length = 0
+    while path:
+        path = path.parent_block
+        trajectory_length += 1
+    return trajectory_length
 
 def main():
     p = argparse.ArgumentParser()

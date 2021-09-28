@@ -11,3 +11,7 @@ def manhattan(start, end):
 # Chebyshev distance
 def chebyshev(start, end):
     return max(abs(start[0]-end[0]), abs(start[1]-end[1]))
+
+# Euclidean and Manhattan
+def combined(start, end):
+    return euclidian(start, end) * 0.33 + manhattan(start, end) * 0.67
