@@ -183,25 +183,30 @@ Here we can clearly see that the number of nodes required to be processed is sig
 
 **Answer**:
 
-In this problem, we can u
+In this problem, we can use combinations of our three admissable heuristics and weighted versions of these to create an inadmissable heuristic to improve the runtime of our repeated A* algorithm at the cost of a higher trajectory length. This is because using combinations and weighted versions of these heuristics can exaggerate the differences in priority for our fringe nodes, forcing A* to check less nodes and go for a path to the goal node at a faster runtime. For example, our f(x) value when using manhattan is equal to the node's parent's g(x) value + 1 + the manhattan distance from the node to the goal node. Because of the way the math works out and how the fringe prioritizes tied nodes, we end up examining every node when we first perform A* on the newly made blank discovered grid. However, when using a weighted heuristic such as the manhattan distance * 3, we exagerate the differences in f(x) values between the nodes, which ends up with less ties and forces our A* to immediately try to find the goal node without needing to examine the other nodes/paths. Although we improve the runtime by not examining other nodes with these weighted heuristics, this means we may not find the most optimal path to the goal node, which should increase our trajectory.
 
 ![Plot](graphs/question_9_heuristic_trajectory.png)
+
+As shown in the graphs, we notice that the weighted manhattan heuristic has a slightly higher trajectory than the regular manhattan trajectory. We also notice that the combinations of heuristics tend to also have a slightly higher trajectory than the trajectories of the regular chebyshev and euclidian heuristics. This trend seems to occur across the densities, but it's more noticeable in higher densities. This matches our expectations as our weighted and combination heuristics prioritizes finding the goal node as fast as possible over finding the most optimal path as the exaggerated differences in the priorities forces A* to ignore some options. Thus, we increase our trajectory by doing this.
 
 ![Plot](graphs/question_9_heuristic_time_unweighted.png)
 
 ![Plot](graphs/question_9_heuristic_time_weighted.png)
 
+As expected, the runtime of the inadmissable heuristics is significantly better than the runtime of the regular heuristics (note the scale of both graphs). As mentioned earlier, this is expected because we are now trying to get to the goal node as fast as possible by examining fewer nodes with these weighted heuristics. By examining fewer nodes with each A* we perform during the planning phase, we cut down on the runtime.
+
 
 ## Appendix
 
 **These were the functions we used to execute the A* algorithm**
+**We used Python's heapq in part of our implementation for the priority queue.**
 
 ```python
 # solves gridworld using A* algorithm
 from priority_queue import Priority_Queue
 from fringe_node import Fringe_Node
 
-# returns the path found as a list of tuples
+# returns the path found as a list of fringe nodes
 def path_planner(start, latest_block, grid, dim, heuristic):
     # contains nodes to be discovered
     fringe = Priority_Queue()
@@ -218,7 +223,9 @@ def path_planner(start, latest_block, grid, dim, heuristic):
 
     # loop through the unvisited nodes
     while len(fringe.queue) > 0:
+        # Dequeue from our priority queue
         curr = fringe.de_queue()
+        # Add to closed set
         closed[curr.curr_block] = curr
         cells_processed += 1
 
@@ -226,7 +233,7 @@ def path_planner(start, latest_block, grid, dim, heuristic):
         if curr.curr_block == (dim-1, dim-1):
             # print("Path Found, Processed %s cells" % cells_processed)
             path = []
-            # we reached the end trace the path back to start
+            # we reached the end, trace the path back to start
             x = curr
             while x.curr_block != start:
                 path.append(x)

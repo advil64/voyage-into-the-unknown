@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",
-            "args": ["-d", "101", "-a", "repeated_a_star", "--heuristic", "combined", "-p", "0.3"]
+            "args": ["-d", "10", "-a", "repeated_a_star", "--heuristic", "manhattan", "-p", "0.3"]
         }
     ]
 }
