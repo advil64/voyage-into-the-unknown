@@ -1,5 +1,6 @@
 # Voyage Into the Unknown
 ### Advith Chegu (ac1771) & Naveenan Yogeswaran (nry7)
+## Both group members contributed equally to the code, data collection, and report. ##
 
 **Question 1**: Why does re-planning only occur when blocks are discovered on the current path? Why not whenever knowledge of the environment is updated?
 
@@ -92,7 +93,7 @@ Therefore as you can see, if we were to re-solve our discovered gridworld once a
 
 ![Plot](graphs/question_4.png)
 
-As we can see, there's a clear and steep decline of the solvability of the gridworld once we increase $p_0$ to $0.4$. Therefore our hypothesis has been tested and true; solvability does indeed fall steeply once you reach a threshold probability of $p_0=0.4$ when solvability decreases to $0.04$ according to our testing.
+As we can see, there's a clear and steep decline of the solvability of the gridworld once we increase $p_0$ to $0.4$. Therefore our hypothesis has been tested and true; solvability does indeed decline as density increases. Based off our graph, we can estimate our threshold probability to be around $p_0=0.35$, where solvability seems to decrease to $0.3$ according to our graph.
 
 We do believe that A* is the best search algorithm to test for solvability here as it is guaranteed to find a path in any solvable gridworld due to it's path planning and heuristics methodologies. Therefore if A* did not succeed, it means that the gridworld was not a solvable one which is what we are trying to measure.
 
@@ -123,11 +124,11 @@ Then we saved all of the times and graphed the data using a bar plot.
 
 ![Plot](graphs/question_5_1.png)
 
-As you can see the Manhattan distance had the lowest run time out of all the other heuristics. To make sure that this data is supported we re-ran our loop with $p=0.4$ this time which was the threshold for solvability as we saw before. The bar plot is shown below.
+As you can see the Manhattan distance had the lowest run time out of all the other heuristics. To make sure that this data is supported we re-ran our loop with $p=0.4$ this time. The bar plot is shown below.
 
 ![Plot](graphs/question_5_4.png)
 
-From this plot we see that our initial observation holds true even when we increase our blocking probability to $0.4$. Though there are significantly more unsolvable grids.
+From this plot we see that our initial observation holds true even when we increase our blocking probability to $0.4$. Though there are more unsolvable grids.
 
 **Question 6**: Taking $dim = 101$, for a range of density $p$ values from 0 to min $(p_0; 0.33)$, and the heuristic chosen as best in Q5, repeatedly generate gridworlds and solve them using Repeated Forward A*. Use as the field of view each immediately adjacent cell in the compass directions. Discuss your results. Are they as you expected? Explain.
 
@@ -135,7 +136,7 @@ From this plot we see that our initial observation holds true even when we incre
 
 ![Plot](graphs/question_6_1.png)
 
-As you can see we achieved the expected result which is the positive correlation between density and average trajectory length. Obviously our algorithm had to take more steps when there are more blockages in its path. This is because our agent will encounter more blocks, forcing it to replan and move around, or possibly backtrack.
+As you can see we achieved the expected result which is the positive correlation between density and average trajectory length. Obviously our algorithm had to take more steps when there are more blockages in its path. This is because our agent will encounter more blocks, forcing it to replan and move around, or possibly backtrack; both of which will increase our trajectory.
 
 For the next graph we followed the same experiment procedure but in addition to calculating trajectory we also calculated the length of the shortest path in the discovered gridworld by running A* on the discovered grid after running repeated A*. Then after taking the average we divided the averages of the trajectories by the averages of the shortest path.
 
@@ -171,7 +172,7 @@ Our previous conclusion directly impacts our next hypothesis. If the shortest pa
 
 ![Plot](graphs/question_7_3.png)
 
-We can see from our plot that our hypothesis is supported. Even at higher densities the ratio keeps rising unlike our full field of vision as the shortest path of the discovered gridworld in the reduced field of vision continues to rise. Compared to Q6, our ratios are also higher which supports the hypothesis that our shortest path in the discovered world is greater when we have reduced field of vision, while shortest path in the complete grid remains the same.
+We can see from our plot that our hypothesis is supported. Even at higher densities the ratio keeps rising unlike our full field of vision as the shortest path of the discovered gridworld in the reduced field of vision continues to rise. Compared to Q6, our ratios are also higher which supports the hypothesis that our shortest path in the discovered grid is greater when we have reduced field of vision, while shortest path in the complete grid remains the same.
 
 Finally, if we don't check neighbors while we're moving through the path, we're going to encounter more blocks which means we have to process more cells as the only way to discover obstacles is to explore them.
 
