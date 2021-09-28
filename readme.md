@@ -165,26 +165,207 @@ Next we looked at the average length of the trajectory divided by the average le
 
 ![Plot](graphs/question_7_2.png)
 
-We can again see that the ratio really did not change as much again. However at higher densities the ratio between reduced and full field of vision decreasse by about a tenth. Which means that the shortest path increased in higher densities. This is because we have less of the gridworld discovered when we run A* therefore we are less likely to find an optimal path on the gridworld which leads to an increased distance in the shortest path
+We can again see that the ratio really did not change as much again. However at higher densities the ratio in the reduced field is a tenth less than it's corresponding ratio where the agent had full field of vision. Which means that the shortest path increased in higher densities. This is because we have less of the gridworld discovered when we run A*, therefore we are less likely to find an optimal path on the gridworld which leads to an increased distance in the shortest path
 
 Our previous conclusion directly impacts our next hypothesis. If the shortest path on the discovered grid world increased this means that our ratio between discovered and complete shortest paths increases. This is because the shortest path on the final grid will likely stay the same.
 
 ![Plot](graphs/question_7_3.png)
 
-We can see from our plot that our hypothesis is supported. Even at higher densities the ratio keeps rising unlike our full field of vision as the shortest path in the reduced continues to rise.
+We can see from our plot that our hypothesis is supported. Even at higher densities the ratio keeps rising unlike our full field of vision as the shortest path in the reduced field of vision continues to rise.
 
-Finally if we explore less while we're moving through the path we're surly going to have to process more cells as the only way to discover obstacles is to now encounter them and to add them to the fringe.
+Finally if we explore less while we're moving through the path we're surely going to have to process more cells as the only way to discover obstacles is to now encounter them and to add them to the fringe.
 
 ![Plot](graphs/question_7_4.png)
 
-Here we can clearly see that the number of nodes required to be processed is significantly greater if we don't explore neighbors at each step in the path. This is because the agent would now have to move more and bump into more nodes to figure out what the landscape looks like.
+Here we can clearly see that the number of nodes required to be processed is significantly greater if we don't explore neighbors at each step in the path. This is because the agent would now likely bump into more nodes to figure out what the landscape looks like.
 
 **Question 9**: A* can frequently be sped up by the use of inadmissible heuristics - for instance weighted heuristics or combinations of heuristics. These can cut down on runtime potentially at the cost of path length. Can this be applied here? What is the efect of weighted heuristics on runtime and overall trajectory? Try to reduce the runtime as much as possible without too much cost to trajectory length.
 
 **Answer**:
+
+In this problem, we can u
 
 ![Plot](graphs/question_9_heuristic_trajectory.png)
 
 ![Plot](graphs/question_9_heuristic_time_unweighted.png)
 
 ![Plot](graphs/question_9_heuristic_time_weighted.png)
+
+
+## Appendix
+
+**These were the functions we used to execute the A* algorithm**
+
+```python
+# solves gridworld using A* algorithm
+from priority_queue import Priority_Queue
+from fringe_node import Fringe_Node
+
+# returns the path found as a list of tuples
+def path_planner(start, latest_block, grid, dim, heuristic):
+    # contains nodes to be discovered
+    fringe = Priority_Queue()
+
+    # contains nodes that were visited
+    closed = {}
+
+    # total number of nodes popped from fringe for processing
+    cells_processed = 0
+
+    # create the first fringe node
+    start_node = Fringe_Node((start[0], start[1]), latest_block, heuristic((0, 0), (dim-1, dim-1)), 0)
+    fringe.enqueue(start_node)
+
+    # loop through the unvisited nodes
+    while len(fringe.queue) > 0:
+        curr = fringe.de_queue()
+        closed[curr.curr_block] = curr
+        cells_processed += 1
+
+        # Check if the goal node was popped
+        if curr.curr_block == (dim-1, dim-1):
+            # print("Path Found, Processed %s cells" % cells_processed)
+            path = []
+            # we reached the end trace the path back to start
+            x = curr
+            while x.curr_block != start:
+                path.append(x)
+                x = x.parent_block
+            path.append(x)
+            path.reverse()
+            return (path, cells_processed)
+        else:
+            check_neighbors(grid, dim, heuristic, curr, fringe, closed)
+
+    print("No Path Found")
+    return ([], cells_processed)
+        
+            
+def check_neighbors(grid, dim, heuristic, curr_node, fringe, closed):
+    curr_coord = curr_node.curr_block
+    # check the neighbor above the block
+    if curr_coord[0] - 1 >= 0:
+        if grid.gridworld[curr_coord[0] - 1][curr_coord[1]] != 1 and not (curr_coord[0] - 1, curr_coord[1]) in closed:
+            new_node = Fringe_Node((curr_coord[0] - 1, curr_coord[1]), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] - 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            fringe.enqueue(new_node)
+    # check the neighbor below the block
+    if curr_coord[0] + 1 < dim:
+        if grid.gridworld[curr_coord[0] + 1][curr_coord[1]] != 1 and not (curr_coord[0] + 1, curr_coord[1]) in closed:
+            new_node = Fringe_Node((curr_coord[0] + 1, curr_coord[1]), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0] + 1, curr_coord[1]), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            fringe.enqueue(new_node)
+    # check the neighbor left of the block
+    if curr_coord[1] - 1 >= 0:
+        if grid.gridworld[curr_coord[0]][curr_coord[1] - 1] != 1 and not (curr_coord[0], curr_coord[1] - 1) in closed:
+            new_node = Fringe_Node((curr_coord[0], curr_coord[1] - 1), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] - 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            fringe.enqueue(new_node)
+    # check the neighbor right of the block
+    if curr_coord[1] + 1 < dim:
+        if grid.gridworld[curr_coord[0]][curr_coord[1] + 1] != 1 and not (curr_coord[0], curr_coord[1] + 1) in closed:
+            new_node = Fringe_Node((curr_coord[0], curr_coord[1] + 1), curr_node, curr_node.dist_from_start + 1 + heuristic((curr_coord[0], curr_coord[1] + 1), (dim-1, dim-1)), curr_node.dist_from_start + 1)
+            fringe.enqueue(new_node)
+```
+
+**This was the function we used to run repeated A* code**
+
+```python
+def repeated_solver(dim, prob, heuristic, complete_grid = None):
+
+    # create a gridworld if we don't get a grid as an argument
+    if not complete_grid:
+        complete_grid = Gridworld(dim, prob, False)
+        complete_grid.print()
+
+    # create gridworld that agent uses to take note of blocks
+    discovered_grid = Gridworld(dim)
+
+    # total number of cells processed
+    total_cells_processed = 0
+
+    final_path = None
+
+    # figure out what heuristic to use
+    if heuristic == "chebyshev":
+        heuristic_pointer = chebyshev
+    elif heuristic == "manhattan":
+        heuristic_pointer = manhattan
+    elif heuristic == "combined":
+        heuristic_pointer = combined
+    else:
+        heuristic_pointer = euclidian
+
+    starting_time = time()
+
+    # start planning a path from the starting block
+    new_path, cells_processed = path_planner((0,0), final_path, discovered_grid, dim, heuristic_pointer)
+    total_cells_processed += cells_processed
+
+    # while A* finds a new path
+    while len(new_path) > 0:
+        # execute the path
+        last_node = execute_path(new_path, complete_grid, discovered_grid, dim)
+        final_path = last_node
+        # get the last unblocked block
+        last_block = (0,0)
+        last_unblock_node = None
+        if last_node:
+            last_block = last_node.curr_block
+            last_unblock_node = last_node.parent_block
+        # check if the path made it to the goal node
+        if last_block == (dim-1, dim-1):
+            break
+        # create a new path from the last unblocked node
+        new_path, cells_processed = path_planner(last_block, last_unblock_node, discovered_grid, dim, heuristic_pointer)
+        total_cells_processed += cells_processed
+
+    # trajectory of the final path
+    trajectory_length = get_trajectory(final_path)
+
+    return trajectory_length
+```
+
+**This method moves the agent according to our path**
+
+```python
+def execute_path(path, complete_grid, discovered_grid, dim):
+    for index, node in enumerate(path):
+        curr = node.curr_block
+        # check if path is blocked
+        if complete_grid.gridworld[curr[0]][curr[1]] == 1:
+            # update our knowledge of blocked nodes
+            discovered_grid.update_grid_obstacle(curr, 1)
+            return node.parent_block
+        discovered_grid.update_grid_obstacle(curr, 0)
+        # update knowledge of neighbor blocks
+        update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim)
+    return path[-1]
+```
+
+**This method updates the obstacles at each move**
+
+```python
+def update_neighbor_obstacles(curr, discovered_grid, complete_grid, dim):
+    # check the neighbor above the block
+    if curr[0] - 1 >= 0:
+        if complete_grid.gridworld[curr[0] - 1][curr[1]] == 1:
+            discovered_grid.update_grid_obstacle((curr[0] - 1, curr[1]), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0] - 1, curr[1]), 0)
+    # check the neighbor below the block
+    if curr[0] + 1 < dim:
+        if complete_grid.gridworld[curr[0] + 1][curr[1]] == 1:
+            discovered_grid.update_grid_obstacle((curr[0] + 1, curr[1]), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0] + 1, curr[1]), 0)
+    # check the neighbor left of the block
+    if curr[1] - 1 >= 0:
+        if complete_grid.gridworld[curr[0]][curr[1] - 1] == 1:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] - 1), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] - 1), 0)
+    # check the neighbor right of the block
+    if curr[1] + 1 < dim:
+        if complete_grid.gridworld[curr[0]][curr[1] + 1] == 1:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1), 1)
+        else:
+            discovered_grid.update_grid_obstacle((curr[0], curr[1] + 1), 0)
+```
