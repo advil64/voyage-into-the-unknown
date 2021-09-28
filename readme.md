@@ -65,7 +65,7 @@ Then we go back and create a new path (avoiding the blocks we discovered) using 
     total_cells_processed += cells_processed
 ```
 
-By using backtracking in the case of a blockage in the path, we can avoid getting stuck in a solvable maze as we can always move back node by node and check for new paths using A*. A* will then explore any node that is reachable until it either reaches the goal node or it runs out of reachable nodes, in which case the maze is unsolvable.
+By using backtracking in the case of a blockage in the path, we can avoid getting stuck in a solvable maze as we can always move back node by node and check for new paths using A*. A* will then explore any node that is reachable and unblocked until it either reaches the goal node or it runs out of reachable nodes, in which case the maze is unsolvable.
 
 **Question 3**: Once the agent reaches the target, consider re-solving the now discovered gridworld for the shortest path (eliminating any backtracking that may have occurred). Will this be an optimal path in the complete gridworld? Argue for, or give a counter example.
 
@@ -81,10 +81,10 @@ By using backtracking in the case of a blockage in the path, we can avoid gettin
 ```
 
 Depending on how we setup our queue and heuristic functions, our agent has two options:
- 1. If the agent takes a step to the right first then it is on its way to find the shortest path as it continues right. In this case our discovered gridworld, once the agent moves through it, will contain the shortest path and A* will follow this path to the finish node when re-solving the now discovered gridworld.
- 2. If the agent takes a step down first (which likely has the same priority as taking a step to the right depending on heuristic), then it will have to follow the longer path as it continues downward due to smaller priorities (f(x)). In this case our discovered gridworld will not contain the shortest path of the complete gridworld and therefore will not be able to traverse it once we re run A* on the discovered world.
+ 1. If the agent takes a step to the right first, then it is on its way to find the shortest path as it continues right. In this case our discovered gridworld, once the agent moves through it, will contain the shortest path and A* will follow this path to the finish node when re-solving the now discovered gridworld.
+ 2. If the agent takes a step down first (which likely has the same priority as taking a step to the right depending on heuristic), then it will have to follow the longer path as it continues downward due to smaller priorities (f(x)). In this case our discovered gridworld will not contain the shortest path of the complete gridworld (as these blocks are undiscovered and so treated as blocked) and therefore will not be able to traverse the most optimal path of the complete gridworld once we re-run A* on the discovered world.
 
-Therefore as you can see, if we were to re-solve our discovered gridworld once a path was found; though it is certainly possible that the shortest (most optimal) path is found it is by no means a guarantee.
+Therefore as you can see, if we were to re-solve our discovered gridworld once a path was found; though it is certainly possible that the shortest (most optimal) path is found, it is by no means a guarantee.
 
 **Question 4**: A gridworld is solvable if it has a clear path from start to goal nodes. How does solvability depend on $p$? Given $dim = 101$, how does solvability depend on $p$? For a range of $p$ values, estimate the probability that a maze will be solvable by generating multiple environments and checking them for solvability. Plot density vs solvability, and try to identify as accurately as you can the threshold $p_0$ where for $p < p_0$, most mazes are solvable, but $p > p_0$, most mazes are not solvable. Is A* the best search algorithm to use here, to test for solvability? Note for this problem you may assume that the entire gridworld is known, and hence only needs to be searched once each.
 
@@ -159,25 +159,25 @@ And again our hypothesis is proven true as there is a clear exponential increase
 
 ![Plot](graphs/question_7_1.png)
 
-While this might be true to an extent at higher densities of blockers, we really did not see that much of an increase in the trajectory length overall in our A* implementation. This might mean that while doing repeated A* it really doesn't make much of a difference in the end overall trajectory to update neighbors while traversing the gridworld. However it takes a longer amount of time to execute the algorithm and find the trajectory.
+While this might be true to an extent at higher densities of blockers, we really did not see that much of an increase in the trajectory length overall in our A* implementation. This might mean that while doing repeated A*, it really doesn't make much of a difference in the end overall trajectory to update neighbors while traversing the gridworld. However, it does take a longer amount of runtime to execute the algorithm and find the trajectory.
 
-Next we looked at the average length of the trajectory divided by the average length of the shortest path on the discovered grid. Because trajectories did not increase as much you would expect the shortest path to not have been too impacted as well as both rely on the density in a similar way.
+Next we looked at the average length of the trajectory divided by the average length of the shortest path on the discovered grid. Because trajectories did not increase as much, you would expect the shortest path to not have been too impacted as well as both rely on the density in a similar way.
 
 ![Plot](graphs/question_7_2.png)
 
-We can again see that the ratio really did not change as much again. However at higher densities the ratio in the reduced field is a tenth less than it's corresponding ratio where the agent had full field of vision. Which means that the shortest path increased in higher densities. This is because we have less of the gridworld discovered when we run A*, therefore we are less likely to find an optimal path on the gridworld which leads to an increased distance in the shortest path
+We can again see that the ratios really did not change as much again compared to the graph in Q6. However at higher densities the ratio in the reduced field is a tenth less than it's corresponding ratio where the agent had full field of vision. This means that the shortest path increased in higher densities. This is because we have less of the gridworld discovered when we run A*, therefore we are less likely to find an optimal path on the gridworld which leads to an increased distance in the shortest path on the discovered gridworld.
 
-Our previous conclusion directly impacts our next hypothesis. If the shortest path on the discovered grid world increased this means that our ratio between discovered and complete shortest paths increases. This is because the shortest path on the final grid will likely stay the same.
+Our previous conclusion directly impacts our next hypothesis. If the shortest path on the discovered grid world increased, this means that our ratio between discovered and complete shortest paths increases. This is because the shortest path on the final grid will likely stay the same.
 
 ![Plot](graphs/question_7_3.png)
 
-We can see from our plot that our hypothesis is supported. Even at higher densities the ratio keeps rising unlike our full field of vision as the shortest path in the reduced field of vision continues to rise.
+We can see from our plot that our hypothesis is supported. Even at higher densities the ratio keeps rising unlike our full field of vision as the shortest path of the discovered gridworld in the reduced field of vision continues to rise. Compared to Q6, our ratios are also higher which supports the hypothesis that our shortest path in the discovered world is greater when we have reduced field of vision, while shortest path in the complete grid remains the same.
 
-Finally if we explore less while we're moving through the path we're surely going to have to process more cells as the only way to discover obstacles is to now encounter them and to add them to the fringe.
+Finally, if we don't check neighbors while we're moving through the path, we're going to encounter more blocks which means we have to process more cells as the only way to discover obstacles is to explore them.
 
 ![Plot](graphs/question_7_4.png)
 
-Here we can clearly see that the number of nodes required to be processed is significantly greater if we don't explore neighbors at each step in the path. This is because the agent would now likely bump into more nodes to figure out what the landscape looks like.
+Here we can clearly see that the number of nodes required to be processed is significantly greater if we don't explore neighbors at each step in the path. This is because the agent would now likely bump into more obstacles, causing our agent to have to replan and process more nodes using A*.
 
 **Question 9**: A* can frequently be sped up by the use of inadmissible heuristics - for instance weighted heuristics or combinations of heuristics. These can cut down on runtime potentially at the cost of path length. Can this be applied here? What is the efect of weighted heuristics on runtime and overall trajectory? Try to reduce the runtime as much as possible without too much cost to trajectory length.
 

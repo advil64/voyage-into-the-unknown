@@ -141,7 +141,7 @@ def question_five(dim, prob, algo):
     # times: chebyshev, manhattan, euclidian
     times = []
 
-    for i,h in enumerate([chebyshev, manhattan, euclidian, combined]):
+    for i,h in enumerate([chebyshev, manhattan, euclidian]):
         starting_time = time()
         path_planner((0,0), final_path, complete_grid, dim, h)
         times.append(time() - starting_time)
