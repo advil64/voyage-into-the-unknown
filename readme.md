@@ -182,3 +182,9 @@ Here we can clearly see that the number of nodes required to be processed is sig
 **Question 9**: A* can frequently be sped up by the use of inadmissible heuristics - for instance weighted heuristics or combinations of heuristics. These can cut down on runtime potentially at the cost of path length. Can this be applied here? What is the efect of weighted heuristics on runtime and overall trajectory? Try to reduce the runtime as much as possible without too much cost to trajectory length.
 
 **Answer**:
+
+![Plot](graphs/question_9_heuristic_trajectory.png)
+
+![Plot](graphs/question_9_heuristic_time_unweighted.png)
+
+![Plot](graphs/question_9_heuristic_time_weighted.png)
